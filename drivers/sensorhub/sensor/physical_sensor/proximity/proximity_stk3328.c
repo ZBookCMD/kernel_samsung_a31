@@ -69,10 +69,8 @@ int proximity_open_calibration_stk3328(void)
 	return ret;
 }
 
-int init_proximity_stk3328(void)
+int init_proximity_stk3328(struct proximity_data *data)
 {
-	struct proximity_data *data = get_sensor(SENSOR_TYPE_PROXIMITY)->data;
-
 	if (data->threshold_data == NULL) {
 		data->threshold_data = kzalloc(sizeof(struct proximity_stk3328_data), GFP_KERNEL);
 		if (!data->threshold_data)
@@ -81,22 +79,14 @@ int init_proximity_stk3328(void)
 	return 0;
 }
 
-struct proximity_chipset_funcs prox_stk3328_funcs = {
+
+struct proximity_chipset_funcs prox_stk3328_ops = {
+	.init = init_proximity_stk3328,
+	.parse_dt = parse_dt_proximity_stk3328,
 	.open_calibration_file = proximity_open_calibration_stk3328,
 };
 
-void *get_proximity_stk3328_chipset_funcs(void)
-{
-	return &prox_stk3328_funcs;
-}
-
-struct sensor_chipset_init_funcs prox_stk3328_ops = {
-	.init = init_proximity_stk3328,
-	.parse_dt = parse_dt_proximity_stk3328,
-	.get_chipset_funcs = get_proximity_stk3328_chipset_funcs,
-};
-
-struct sensor_chipset_init_funcs *get_proximity_stk3328_function_pointer(char *name)
+struct proximity_chipset_funcs *get_proximity_stk3328_function_pointer(char *name)
 {
 	if (strcmp(name, STK3328_NAME) != 0)
 		return NULL;

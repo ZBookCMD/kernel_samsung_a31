@@ -1158,7 +1158,8 @@ ssize_t sysfs_device_store_attrs(
 #endif
 	case BATT_RESET_SOC:
 		/* Do NOT reset fuel gauge in charging mode */
-		if (battery->is_jig_on) {
+		if (is_nocharge_type(battery->cable_type) ||
+			battery->is_jig_on) {
 			sec_bat_set_misc_event(battery, BATT_MISC_EVENT_BATT_RESET_SOC, BATT_MISC_EVENT_BATT_RESET_SOC);
 
 			value.intval =

@@ -30,6 +30,4 @@ int get_cnt_timeout(void);
 int init_comm_to_hub(void);
 void exit_comm_to_hub(void);
 
-void stop_comm_to_hub(void);
-
 #endif /* __SHUB_COMM_H__ */

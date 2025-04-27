@@ -182,7 +182,6 @@ enum misc_battery_health {
 	GENERATE(VOTER_WATER)	\
 	GENERATE(VOTER_WC_TX)	\
 	GENERATE(VOTER_SLATE)	\
-	GENERATE(VOTER_SMART_SLATE)	\
 	GENERATE(VOTER_SUSPEND)	\
 	GENERATE(VOTER_SYSOVLO)	\
 	GENERATE(VOTER_VBAT_OVP)	\
@@ -657,7 +656,6 @@ typedef struct sec_battery_platform_data {
 	bool volt_from_pmic;
 	bool pd_comm_cap;
 	bool dynamic_cv_factor;
-	bool slowcharging_usb_bootcomplete;
 
 	/* wireless charger */
 	char *wireless_charger_name;
@@ -1207,7 +1205,6 @@ struct sec_battery_info {
 #endif
 	int batt_full_capacity;
 	bool usb_slow_chg;
-	bool usb_bootcomplete;
 };
 
 /* event check */
@@ -1239,6 +1236,10 @@ extern bool mfc_fw_update;
 #if IS_ENABLED(CONFIG_DISCRETE_CHARGER)
 #if defined(CONFIG_AFC_CHARGER)
 extern int afc_set_voltage(int vol);
+#endif
+#else
+#if defined(CONFIG_USE_MUIC)
+extern int muic_afc_set_voltage(int vol);
 #endif
 #endif
 

@@ -27,13 +27,9 @@
 #define CAMERA_LUX_ENABLE		-1
 #define CAMERA_LUX_DISABLE		-2
 
-static int init_light_autobrightness_variable(void)
+static void init_light_autobrightness_variable(struct light_autobrightness_data *data)
 {
-	struct light_autobrightness_data *data = get_sensor(SENSOR_TYPE_LIGHT_AUTOBRIGHTNESS)->data;
-
 	data->camera_lux_en = false;
-
-	return 0;
 }
 
 static void parse_dt_light_autobrightness(struct device *dev)
@@ -221,8 +217,9 @@ int init_light_autobrightness(bool en)
 		sensor->funcs->report_event = report_event_light_autobrightness;
 		sensor->funcs->print_debug = print_light_autobrightness_debug;
 		sensor->funcs->inject_additional_data = inject_light_ab_additional_data;
-		sensor->funcs->init_variable = init_light_autobrightness_variable;
-		sensor->funcs->parse_dt = parse_dt_light_autobrightness;
+
+		init_light_autobrightness_variable(sensor->data);
+		parse_dt_light_autobrightness(get_shub_device());
 	} else {
 		kfree(sensor->data);
 		sensor->data = NULL;

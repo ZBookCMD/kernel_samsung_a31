@@ -69,10 +69,10 @@ int get_light_cct_sensor_value(char *dataframe, int *index, struct sensor_event 
 	memcpy(&sensor_value->w, dataframe + *index, data->raw_data_size);
 	*index += data->raw_data_size;
 
-	memcpy(&sensor_value->a_time, dataframe + *index, data->raw_data_size);
-	*index += data->raw_data_size;
-	memcpy(&sensor_value->a_gain, dataframe + *index, data->raw_data_size);
-	*index += data->raw_data_size;
+	memcpy(&sensor_value->a_time, dataframe + *index, sizeof(sensor_value->a_time));
+	*index += sizeof(sensor_value->a_time);
+	memcpy(&sensor_value->a_gain, dataframe + *index, sizeof(sensor_value->a_gain));
+	*index += sizeof(sensor_value->a_gain);
 
 	return 0;
 }
@@ -97,10 +97,7 @@ int init_light_cct(bool en)
 
 	if (en) {
 		strcpy(sensor->name, "light_cct_sensor");
-		if(sensor->spec.version >= LIGHT_DEBIG_EVENT_SIZE_4BYTE_VERSION)
-			sensor->receive_event_size = 36;
-		else
-			sensor->receive_event_size = 24;
+		sensor->receive_event_size = 24;
 		sensor->report_event_size = 14;
 		sensor->event_buffer.value = kzalloc(sizeof(struct light_cct_event), GFP_KERNEL);
 		if (!sensor->event_buffer.value)

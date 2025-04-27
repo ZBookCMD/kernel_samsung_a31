@@ -336,8 +336,6 @@ struct ssusb_mtk {
 	struct charger_device *chg_dev;
 	void *priv_data;
 	enum fpga_phy_version fpga_phy_ver;
-	/* u2 cdp */
-	struct work_struct dp_work;
 };
 
 /**
@@ -433,8 +431,6 @@ struct mtu3 {
 	u32 hw_version;
 
 	struct delayed_work check_ltssm_work;
-	unsigned usb_rdy:1;
-	unsigned usb_bootcomplete:1;
 
 #if defined(CONFIG_BATTERY_SAMSUNG)
 	struct work_struct set_vbus_current_work;
@@ -496,7 +492,6 @@ static inline void mtu3_clrbits(void __iomem *base, u32 offset, u32 bits)
 }
 
 int ssusb_check_clocks(struct ssusb_mtk *ssusb, u32 ex_clks);
-void ssusb_phy_dp_pullup(struct ssusb_mtk *ssusb);
 struct usb_request *mtu3_alloc_request(struct usb_ep *ep, gfp_t gfp_flags);
 void mtu3_free_request(struct usb_ep *ep, struct usb_request *req);
 void mtu3_req_complete(struct mtu3_ep *mep,

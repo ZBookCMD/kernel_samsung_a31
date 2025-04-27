@@ -25,14 +25,12 @@
 
 #define YAS539_NAME   "YAS539"
 
-static int init_mag_yas539(void)
+static void init_mag_yas539(void)
 {
 	struct magnetometer_data *data = get_sensor(SENSOR_TYPE_GEOMAGNETIC_FIELD)->data;
 
 	data->mag_matrix_len = 18;
 	data->cal_data_len = sizeof(struct calibration_data_yas539);
-
-	return 0;
 }
 
 static void parse_dt_magnetometer_yas539(struct device *dev)
@@ -74,12 +72,12 @@ static void parse_dt_magnetometer_yas539(struct device *dev)
 	}
 }
 
-struct sensor_chipset_init_funcs magnetic_yas539_ops = {
+struct magnetometer_chipset_funcs magnetic_yas539_ops = {
 	.init = init_mag_yas539,
 	.parse_dt = parse_dt_magnetometer_yas539,
 };
 
-struct sensor_chipset_init_funcs *get_magnetic_yas539_function_pointer(char *name)
+struct magnetometer_chipset_funcs *get_magnetic_yas539_function_pointer(char *name)
 {
 	if (strcmp(name, YAS539_NAME) != 0)
 		return NULL;

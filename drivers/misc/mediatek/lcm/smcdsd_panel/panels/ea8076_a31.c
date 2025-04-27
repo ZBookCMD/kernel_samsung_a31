@@ -2495,8 +2495,8 @@ struct mipi_dsi_lcd_driver ea8076_mipi_lcd_driver = {
 	.panel_reset	= smcdsd_panel_reset,
 	.panel_power	= smcdsd_panel_power,
 #ifdef CONFIG_MTK_HIGH_FRAME_RATE
-	.set_fps		= smcdsd_panel_change_fps,
-	.is_new_fps		= smcdsd_panel_is_new_fps,
+//	.set_fps		= smcdsd_panel_change_fps,
+//	.is_new_fps		= smcdsd_panel_is_new_fps,
 #endif
 #if defined(CONFIG_SMCDSD_DOZE)
 	.doze_init	= smcdsd_panel_initalpm,

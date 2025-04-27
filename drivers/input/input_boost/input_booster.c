@@ -20,7 +20,6 @@ struct workqueue_struct *ib_handle_highwq;
 
 int total_ib_cnt;
 int ib_init_succeed;
-int u_ib_mode;
 
 int level_value = IB_MAX;
 

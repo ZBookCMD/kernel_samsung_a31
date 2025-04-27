@@ -1,8 +1,5 @@
 #include <linux/input/input_booster.h>
-#ifdef CONFIG_MTK_PMQOS
-#include <linux/soc/mediatek/mtk-pm-qos.h>
-#define MTK_PMQOS_ENABLED
-#endif
+#include <sched_ctl.h>
 #define PM_QOS_DDR_OPP_DEFAULT 16
 #define DDR_OPP_NUM 3
 
@@ -29,7 +26,7 @@ int trans_freq_to_level(long request_ddr_freq)
 	int i = 0;
 
 	if (request_ddr_freq <= 0) {
-		return -1;
+		return PM_QOS_DDR_OPP_DEFAULT;
 	}
 
 	for (i = 1; i < DDR_OPP_NUM; i++) {
@@ -38,14 +35,10 @@ int trans_freq_to_level(long request_ddr_freq)
 		}
 	}
 
-	return DDR_OPP_NUM-1;
+	return DDR_OPP_NUM - 1;
 }
 
-#if defined(MTK_PMQOS_ENABLED)
-static struct mtk_pm_qos_request ddr_pm_qos_request;
-#else
 static struct pm_qos_request ddr_pm_qos_request;
-#endif
 
 void ib_set_booster(long *qos_values)
 {
@@ -70,14 +63,12 @@ void ib_set_booster(long *qos_values)
 			break;
 		case DDRFREQ:
 			ddr_level = trans_freq_to_level(value);
-			if (ddr_level != -1) {
-#if defined(MTK_PMQOS_ENABLED)
-				mtk_pm_qos_update_request(&ddr_pm_qos_request, ddr_level);
-#else
-				pm_qos_update_request(&ddr_pm_qos_request, ddr_level);
-#endif
-				pr_booster("%s :: bus value : %ld", __func__, dvfsrc_opp_table[ddr_level]);
-			}
+			pm_qos_update_request(&ddr_pm_qos_request, ddr_level);
+			pr_booster("%s :: bus value : %ld", __func__, dvfsrc_opp_table[ddr_level]);
+			break;
+		case SCHEDBOOST:
+			set_sched_boost(value);
+			pr_booster("%s :: schedboost value : %ld", __func__, value);
 			break;
 		default:
 			pr_booster("%s :: cur_res_idx : %d is not used", __func__, cur_res_idx);
@@ -110,12 +101,12 @@ void ib_release_booster(long *rel_flags)
 			pr_booster("%s :: cpufreq value : %ld", __func__, value);
 			break;
 		case DDRFREQ:
-#if defined(MTK_PMQOS_ENABLED)
-			mtk_pm_qos_update_request(&ddr_pm_qos_request, value);
-#else
 			pm_qos_update_request(&ddr_pm_qos_request, value);
-#endif
 			pr_booster("%s :: bus value : %ld", __func__, value);
+			break;
+		case SCHEDBOOST:
+			set_sched_boost(value);
+			pr_booster("%s :: schedboost value : %ld", __func__, value);
 			break;
 		default:
 			pr_booster("%s :: cur_res_idx : %d is not used", __func__, cur_res_idx);
@@ -126,19 +117,11 @@ void ib_release_booster(long *rel_flags)
 
 int input_booster_init_vendor(void)
 {
-#if defined(MTK_PMQOS_ENABLED)
-	mtk_pm_qos_add_request(&ddr_pm_qos_request, MTK_PM_QOS_DDR_OPP, PM_QOS_DDR_OPP_DEFAULT);
-#else
 	pm_qos_add_request(&ddr_pm_qos_request, PM_QOS_DDR_OPP, PM_QOS_DDR_OPP_DEFAULT);
-#endif
 	return 1;
 }
 
 void input_booster_exit_vendor(void)
 {
-#if defined(MTK_PMQOS_ENABLED)
-	mtk_pm_qos_remove_request(&ddr_pm_qos_request);
-#else
 	pm_qos_remove_request(&ddr_pm_qos_request);
-#endif
 }
