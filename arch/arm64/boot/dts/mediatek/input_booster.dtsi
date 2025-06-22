@@ -23,7 +23,7 @@
 		/* Each Cpu Cluster Start Cpu */
 		cpu_cluster_policy = "6,0";
 
-		/* < CPU, DDR > */
+		/* < CPU, DDR, SCHEDBOOST > */
 		ib_release_values = "-1,16,0";
 
 		/* Select Allowed Resource Index Group */
@@ -35,7 +35,7 @@
 
 			/* Time table */
 			input_booster,head_time = <200>;
-			input_booster,tail_time = <0>;
+			input_booster,tail_time = <200>;
 
 			/* Resource Table Sequentially identified with index
 			 * CPU's ID & Index : 0
@@ -85,8 +85,8 @@
 			input_booster,type = <2>;	/* BOOSTER_DEVICE_TOUCH */
 
 			/* Time table */
-			input_booster,head_time = <130>;
-			input_booster,tail_time = <500>;
+			input_booster,head_time = <200>;
+			input_booster,tail_time = <300>;
 
 			/* Input Booster Resource Frequency */
 			inputbooster,resource {
@@ -132,7 +132,7 @@
 
 			/* Time table */
 			input_booster,head_time = <200>;
-			input_booster,tail_time = <200>;
+			input_booster,tail_time = <0>;
 
 			/* Input Booster Resource Frequency */
 			inputbooster,resource {

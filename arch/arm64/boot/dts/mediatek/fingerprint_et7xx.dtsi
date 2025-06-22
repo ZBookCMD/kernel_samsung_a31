@@ -116,9 +116,9 @@
 		etspi-sleepPin = <SEC_GPIO_REF(AP,pio,53) 0>;
 		etspi-ldoPin = <SEC_GPIO_REF(AP,pio,77) 0>;
 		etspi-chipid = "ET713";
-		etspi-modelinfo = "A325";
-		etspi-position = "8.45,0.00,9.10,9.10,14.80,14.80,12.00,12.00,5.00";
-		etspi-rb = "611,-1,-1,FFFFFF";
+		etspi-modelinfo = "A315";
+		etspi-position = "8.97,0.00,9.10,9.10,14.80,14.80,12.00,12.00,5.00";
+		etspi-rb = "525,-1,-1";
 		controller-data {
 			mediatek,tckdly = <1>;
 		};

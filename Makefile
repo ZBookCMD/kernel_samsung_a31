@@ -1512,30 +1512,16 @@ clean: archclean vmlinuxclean
 # mrproper - Delete all generated files, including .config
 #
 
-save-patches:
-	@if [ -d patches ]; then \
-		mkdir tmp; \
-		mv patches tmp/patches_bak; \
-	fi
-
-restore-patches:
-	@if [ -d tmp/patches_bak ]; then \
-		rm -rf patches; \
-		mv tmp/patches_bak patches; \
-		rm -rf tmp; \
-	fi
-
-mrproper:  save-patches
-mrproper:  rm-dirs  := $(wildcard $(MRPROPER_DIRS))
-mrproper:  rm-files := $(wildcard $(MRPROPER_FILES))
-mrproper:  restore-patches
+MRPROPER_DIRS += out
+mrproper: rm-dirs  := $(wildcard $(MRPROPER_DIRS))
+mrproper: rm-files := $(wildcard $(MRPROPER_FILES))
 mrproper-dirs      := $(addprefix _mrproper_,scripts)
 
 PHONY += $(mrproper-dirs) mrproper archmrproper
 $(mrproper-dirs):
 	$(Q)$(MAKE) $(clean)=$(patsubst _mrproper_%,%,$@)
 
-mrproper:  save-patches clean archmrproper $(mrproper-dirs) restore-patches
+mrproper: clean archmrproper $(mrproper-dirs)
 	$(call cmd,rmdirs)
 	$(call cmd,rmfiles)
 

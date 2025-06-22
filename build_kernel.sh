@@ -20,14 +20,16 @@ fi
 
 # If .config not found, make it
 if [ ! -f $build_dir/.config ]; then
-	make -C $(pwd) O=$build_dir KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y a31_pmOS_defconfig
+	make -C $(pwd) O=$build_dir a31_pmOS_defconfig
 fi
 
 # Start make kernel (if /bin/ts exist, output log with time)
 if [[ -x /bin/ts || -x /usr/bin/ts ]]; then
-	make -C $(pwd) O=$build_dir KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y -j2 2>&1 | ts '[%H:%M:%S]' | tee $log
+	make -C $(pwd) O=$build_dir -j1 2>&1 | ts '[%H:%M:%S]' | tee $log
 else
-	make -C $(pwd) O=$build_dir KCFLAGS=-w CONFIG_SECTION_MISMATCH_WARN_ONLY=y -j2 2>&1 | tee $log
+	make -C "$(pwd)" O="$build_dir" -j1 2>&1 | while IFS= read -r line; do
+    		echo "[$(date +%H:%M:%S)] $line"
+	done | tee "$log"
 fi
 
 # Copy Image.gz to srctree if exist

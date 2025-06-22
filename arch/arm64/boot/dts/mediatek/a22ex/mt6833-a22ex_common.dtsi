@@ -20,7 +20,6 @@
 			};
 			usb_notifier {
 				compatible = "samsung,usb-notifier";
-				disable_host_wakelock;
 			};
 
 			usb_tuning: usb_tuning {
