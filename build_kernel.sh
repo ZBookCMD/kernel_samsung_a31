@@ -14,25 +14,27 @@ export KCFLAGS=-w
 export CONFIG_SECTION_MISMATCH_WARN_ONLY=y
 
 # Check if $build_dir DONT exist and create it
-if [ ! -d $build_dir ]; then
-	mkdir $build_dir
+if [ ! -d "$build_dir" ]; then
+	mkdir "$build_dir"
 fi
 
 # If .config not found, make it
-if [ ! -f $build_dir/.config ]; then
-	make -C $(pwd) O=$build_dir a31_pmOS_defconfig
+if [ ! -f "$build_dir"/.config ]; then
+	make -C "$(pwd)" O="$build_dir" a31_pmOS_defconfig
 fi
 
 # Start make kernel (if /bin/ts exist, output log with time)
 if [[ -x /bin/ts || -x /usr/bin/ts ]]; then
-	make -C $(pwd) O=$build_dir -j1 2>&1 | ts '[%H:%M:%S]' | tee $log
+	make -C "$(pwd)" O="$build_dir" -j"$(nproc)" | ts '[%H:%M:%S]' | tee $log
 else
-	make -C "$(pwd)" O="$build_dir" -j1 2>&1 | while IFS= read -r line; do
+	make -C "$(pwd)" O="$build_dir" -j"$(nproc)" | while IFS= read -r line; do
     		echo "[$(date +%H:%M:%S)] $line"
 	done | tee "$log"
 fi
 
 # Copy Image.gz to srctree if exist
-if [ -f $build_dir/arch/arm64/boot/Image.gz ]; then
-	cp $build_dir/arch/arm64/boot/Image.gz $(pwd)/arch/arm64/boot/Image.gz
+if [ -f "$build_dir"/arch/"$ARCH"/boot/Image.gz ]; then
+	cp "$build_dir"/arch/"$ARCH"/boot/Image.gz "$(pwd)"/arch/"$ARCH"/boot/Image.gz
+elif [ -f "$build_dir"/arch/"$ARCH"/boot/Image.gz-dtb ]; then
+	cp "$build_dir"/arch/"$ARCH"/boot/Image.gz-dtb "$(pwd)"/arch/"$ARCH"/boot/Image.gz-dtb
 fi
